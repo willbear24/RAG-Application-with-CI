@@ -88,7 +88,12 @@ def generate(messages):
     try:
         r = requests.post(
             f"{settings.OLLAMA_URL}/api/chat",
-            json={"model": settings.MODEL_NAME, "messages": messages, "stream": False},
+            json={
+                "model": settings.MODEL_NAME,
+                "messages": messages,
+                "stream": False,
+                "options": {"temperature": 0},
+            },
         )
         return r.json()["message"]["content"]
     except requests.exceptions.ConnectionError:
