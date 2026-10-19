@@ -1,5 +1,5 @@
 from fastapi.testclient import TestClient
-from backend.my_rag_api import app
+from my_rag_api import app
 
 client = TestClient(app)
 
