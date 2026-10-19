@@ -1,10 +1,11 @@
+import os
+
+import chromadb
+import requests
+from config import settings
 from fastapi import FastAPI, HTTPException
 from fastapi.middleware.cors import CORSMiddleware
 from pydantic import BaseModel
-import chromadb
-import requests
-import os
-from config import settings
 
 app = FastAPI(title="My RAG API", version="1.0")
 app.add_middleware(
@@ -160,6 +161,11 @@ def ingest_documents():
     return {"message": f"Ingested {len(chunks)} chunks from {docs_dir}/"}
 
 
+@app.get("/")
+def root():
+    return {"message": "My RAG API is running"}
+
+
 @app.get("/stats")
 def stats():
     return {
@@ -175,8 +181,8 @@ def health():
     try:
         r = requests.get(f"{settings.OLLAMA_URL}/api/tags", timeout=2)
         ollama_ok = r.status_code == 200
-    except:
-        pass
+    except requests.RequestException:
+        ollama_ok = False
     return {
         "chromadb": "ok",
         "ollama": "ok" if ollama_ok else "unavailable",
